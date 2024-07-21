@@ -4,13 +4,13 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
-import { courses } from "@/db/schema";
+import { courses, userProgress } from "@/db/schema";
 import { Card } from "./card";
 import { upsertUserProgress } from "@/actions/user-progress";
 
 type Props = {
   courses: (typeof courses.$inferSelect)[];
-  activeCourseId?: number | null;
+  activeCourseId?: typeof userProgress.$inferSelect.activeCourseId;
 };
 
 export const List = ({ courses, activeCourseId }: Props) => {
