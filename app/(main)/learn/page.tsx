@@ -5,6 +5,7 @@ import { StickyWrapper } from "@/components/sticky-wrapper";
 import UserProgress from "@/components/user-progress";
 import { Header } from "./components/header";
 import { getUnits, getUserProgress } from "@/db/queries";
+import Unit from "./components/unit";
 
 const LearnPage = async () => {
   const [userProgress, units] = await Promise.all([
@@ -29,6 +30,20 @@ const LearnPage = async () => {
 
       <FeedWrapper>
         <Header title={userProgress.activeCourse.title} />
+
+        {units.map((unit) => (
+          <div key={unit.id} className="mb-10">
+            <Unit
+              id={unit.id}
+              order={unit.order}
+              title={unit.title}
+              description={unit.description}
+              lessons={unit.lessons}
+              activeLesson={undefined}
+              activeLessonPercentage={0}
+            />
+          </div>
+        ))}
       </FeedWrapper>
     </div>
   );
