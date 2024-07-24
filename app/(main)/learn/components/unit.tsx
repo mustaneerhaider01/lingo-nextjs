@@ -31,6 +31,9 @@ const Unit = ({
           const isCurrent = lesson.id === activeLesson?.id;
           const isLocked = !lesson.completed && !isCurrent;
 
+          console.log(lesson.id, isCurrent);
+          console.log(lesson.id, isLocked);
+
           return (
             <LessonButton
               key={lesson.id}
