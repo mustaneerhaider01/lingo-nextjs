@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
+import { ExitModal } from "@/components/modals/exit-modal";
 
 const font = Nunito({ subsets: ["latin"] });
 
@@ -21,7 +22,8 @@ export default function RootLayout({
     <ClerkProvider afterSignOutUrl="/">
       <html lang="en">
         <body className={font.className}>
-          <Toaster richColors />
+          <Toaster theme="light" />
+          <ExitModal />
           {children}
         </body>
       </html>
