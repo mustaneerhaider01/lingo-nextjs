@@ -21,7 +21,7 @@ const LearnPage = async () => {
       getLessonPercentage(),
     ]);
 
-  if (!userProgress || !userProgress.activeCourse) {
+  if (!courseProgress || !userProgress || !userProgress.activeCourse) {
     redirect("/courses");
   }
 
