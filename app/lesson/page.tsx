@@ -13,10 +13,13 @@ const LessonPage = async () => {
     redirect("/learn");
   }
 
-  const initialPercentage =
-    (lesson.challenges.filter((challenge) => challenge.completed).length /
-      lesson.challenges.length) *
-    100;
+  const completedChallenges = lesson.challenges.filter(
+    (challenge) => challenge.completed
+  );
+
+  const initialPercentage = Math.round(
+    (completedChallenges.length / lesson.challenges.length) * 100
+  );
 
   return (
     <Quiz

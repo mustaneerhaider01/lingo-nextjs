@@ -9,6 +9,7 @@ import { challengeOptions, challenges } from "@/db/schema";
 import QuestionBubble from "./question-bubble";
 import Footer from "./footer";
 import { upsertChallengeProgress } from "@/actions/challenge-progress";
+import { reduceHearts } from "@/actions/user-progress";
 
 type Props = {
   initialPercentage: number;
@@ -58,7 +59,7 @@ const Quiz = ({
   };
 
   const onContinue = () => {
-    if (!selectedOption || pending) return;
+    if (pending || !selectedOption) return;
 
     if (status === "wrong") {
       setStatus("none");
@@ -101,7 +102,27 @@ const Quiz = ({
           );
       });
     } else {
-      console.log("Incorrect option!");
+      startTransition(() => {
+        reduceHearts(activeChallenge.id)
+          .then((response) => {
+            if (response?.error === "hearts") {
+              console.error("Missing hearts!");
+              return;
+            }
+
+            setStatus("wrong");
+
+            // Either user is practicing or they have active subscription
+            if (!response?.error) {
+              setHearts((prev) => Math.max(prev - 1, 0));
+            }
+          })
+          .catch((err) =>
+            toast.error(
+              err.message || "Something went wrong. Please try again."
+            )
+          );
+      });
     }
   };
 
