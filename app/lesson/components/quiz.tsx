@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Image from "next/image";
 import { toast } from "sonner";
+import { useAudio } from "react-use";
 
 import Header from "./header";
 import Challenge from "./challenge";
@@ -10,6 +12,8 @@ import QuestionBubble from "./question-bubble";
 import Footer from "./footer";
 import { upsertChallengeProgress } from "@/actions/challenge-progress";
 import { reduceHearts } from "@/actions/user-progress";
+import { MAX_HEARTS, POINTS_PER_CHALLENGE } from "@/constants";
+import ResultCard from "./result-card";
 
 type Props = {
   initialPercentage: number;
@@ -29,6 +33,10 @@ const Quiz = ({
   initialLessonChallenges,
   userSubscription,
 }: Props) => {
+  const [correctAudio, _c, correctControls] = useAudio({ src: "/correct.wav" });
+  const [incorrectAudio, _i, incorrectControls] = useAudio({
+    src: "/incorrect.wav",
+  });
   const [pending, startTransition] = useTransition();
 
   const [hearts, setHearts] = useState(initialHearts);
@@ -87,12 +95,13 @@ const Quiz = ({
               return;
             }
 
+            correctControls.play();
             setStatus("correct");
             setPercentage((prev) => prev + 100 / challenges.length);
 
             // This is practice
             if (initialPercentage === 100) {
-              setHearts((prev) => Math.min(prev + 1, 5));
+              setHearts((prev) => Math.min(prev + 1, MAX_HEARTS));
             }
           })
           .catch((err) =>
@@ -110,6 +119,7 @@ const Quiz = ({
               return;
             }
 
+            incorrectControls.play();
             setStatus("wrong");
 
             // Either user is practicing or they have active subscription
@@ -126,6 +136,38 @@ const Quiz = ({
     }
   };
 
+  // TODO: Remove true...
+  if (true || !activeChallenge) {
+    return (
+      <div className="flex flex-col gap-y-4 lg:gap-y-8 max-w-lg mx-auto text-center items-center justify-center h-full">
+        <Image
+          src="/finish.svg"
+          alt="Finish"
+          height={100}
+          width={100}
+          className="hidden lg:block"
+        />
+        <Image
+          src="/finish.svg"
+          alt="Finish"
+          height={50}
+          width={50}
+          className="block lg:hidden"
+        />
+        <h1 className="text-xl lg:text-3xl font-bold text-neutral-700">
+          Great job! <br /> You&apos;ve completed the lesson.
+        </h1>
+        <div className="flex items-center gap-x-4 w-full">
+          <ResultCard
+            variant="points"
+            value={challenges.length * POINTS_PER_CHALLENGE}
+          />
+          <ResultCard variant="hearts" value={hearts} />
+        </div>
+      </div>
+    );
+  }
+
   const title =
     activeChallenge.type === "ASSIST"
       ? "Select the correct meaning"
@@ -133,6 +175,8 @@ const Quiz = ({
 
   return (
     <>
+      {incorrectAudio}
+      {correctAudio}
       <Header
         hearts={hearts}
         percentage={percentage}

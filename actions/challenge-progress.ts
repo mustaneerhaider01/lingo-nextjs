@@ -5,13 +5,9 @@ import { and, eq } from "drizzle-orm";
 
 import db from "@/db/drizzle";
 import { getUserProgress } from "@/db/queries";
-import {
-  challengeOptions,
-  challengeProgress,
-  challenges,
-  userProgress,
-} from "@/db/schema";
+import { challengeProgress, challenges, userProgress } from "@/db/schema";
 import { revalidatePath } from "next/cache";
+import { MAX_HEARTS, POINTS_PER_CHALLENGE } from "@/constants";
 
 export const upsertChallengeProgress = async (challengeId: number) => {
   const { userId } = await auth();
@@ -62,8 +58,8 @@ export const upsertChallengeProgress = async (challengeId: number) => {
     await db
       .update(userProgress)
       .set({
-        hearts: Math.min(currentUserProgress.hearts + 1, 5),
-        points: currentUserProgress.points + 10,
+        hearts: Math.min(currentUserProgress.hearts + 1, MAX_HEARTS),
+        points: currentUserProgress.points + POINTS_PER_CHALLENGE,
       })
       .where(eq(userProgress.userId, userId));
 
@@ -84,7 +80,7 @@ export const upsertChallengeProgress = async (challengeId: number) => {
   await db
     .update(userProgress)
     .set({
-      points: currentUserProgress.points + 10,
+      points: currentUserProgress.points + POINTS_PER_CHALLENGE,
     })
     .where(eq(userProgress.userId, userId));
 
