@@ -9,7 +9,7 @@ type PageProps = {
   };
 };
 
-const LessonPage = async ({ params: { lessonId } }: PageProps) => {
+const PracticeLessonPage = async ({ params: { lessonId } }: PageProps) => {
   const [lesson, userProgress] = await Promise.all([
     getLesson(Number(lessonId)),
     getUserProgress(),
@@ -38,4 +38,4 @@ const LessonPage = async ({ params: { lessonId } }: PageProps) => {
   );
 };
 
-export default LessonPage;
+export default PracticeLessonPage;

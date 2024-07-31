@@ -24,9 +24,9 @@ export const HeartsModal = () => {
     setIsClient(true);
   }, []);
 
-  const handleClick = () => {
+  const onClick = () => {
     close();
-    router.push("/store");
+    router.push("/shop");
   };
 
   if (!isClient) {
@@ -44,7 +44,7 @@ export const HeartsModal = () => {
             You ran out of hearts!
           </DialogTitle>
           <DialogDescription className="text-center text-base">
-            Get Pro for unlimited hearts, or purchase them in the store.
+            Get Pro for unlimited hearts, or purchase them in the shop.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="mb-4">
@@ -53,7 +53,7 @@ export const HeartsModal = () => {
               variant="primary"
               size="lg"
               className="w-full"
-              onClick={handleClick}
+              onClick={onClick}
             >
               Get unlimited hearts
             </Button>

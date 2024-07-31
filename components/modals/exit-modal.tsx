@@ -24,7 +24,7 @@ export const ExitModal = () => {
     setIsClient(true);
   }, []);
 
-  const handleEndSession = () => {
+  const onEndSession = () => {
     close();
     router.push("/learn");
   };
@@ -61,7 +61,7 @@ export const ExitModal = () => {
               variant="dangerOutline"
               size="lg"
               className="w-full"
-              onClick={handleEndSession}
+              onClick={onEndSession}
             >
               End Session
             </Button>
