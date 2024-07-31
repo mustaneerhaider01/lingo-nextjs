@@ -1,11 +1,17 @@
 import { redirect } from "next/navigation";
 
 import { getLesson, getUserProgress } from "@/db/queries";
-import Quiz from "./components/quiz";
+import Quiz from "../components/quiz";
 
-const LessonPage = async () => {
+type PageProps = {
+  params: {
+    lessonId: string;
+  };
+};
+
+const LessonPage = async ({ params: { lessonId } }: PageProps) => {
   const [lesson, userProgress] = await Promise.all([
-    getLesson(),
+    getLesson(Number(lessonId)),
     getUserProgress(),
   ]);
 

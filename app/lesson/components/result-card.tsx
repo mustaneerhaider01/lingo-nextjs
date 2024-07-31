@@ -13,8 +13,8 @@ const ResultCard = ({ value, variant }: Props) => {
   return (
     <div
       className={cn(
-        "rounded-2xl border-2 w-full",
-        variant === "points" && "border-orange-400",
+        "rounded-2xl border-2 w-full overflow-hidden",
+        variant === "points" && "bg-orange-400 border-orange-400",
         variant === "hearts" && "bg-rose-500 border-rose-500"
       )}
     >
@@ -29,7 +29,7 @@ const ResultCard = ({ value, variant }: Props) => {
       </div>
       <div
         className={cn(
-          "rounded-2xl bg-white flex items-center justify-center p-6 font-bold text-lg",
+          "rounded-t-2xl bg-white flex items-center justify-center p-6 font-bold text-lg",
           variant === "points" && "text-orange-400",
           variant === "hearts" && "text-rose-500"
         )}
