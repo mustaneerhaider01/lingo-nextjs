@@ -50,7 +50,7 @@ export const getCourseById = cache(async (courseId: number) => {
 });
 
 export const getUnits = cache(async () => {
-  const { userId } = await auth();
+  const { userId } = auth();
   const userProgress = await getUserProgress();
 
   if (!userId || !userProgress?.activeCourseId) {
@@ -98,7 +98,7 @@ export const getUnits = cache(async () => {
 });
 
 export const getCourseProgress = cache(async () => {
-  const { userId } = await auth();
+  const { userId } = auth();
   const userProgress = await getUserProgress();
 
   if (!userId || !userProgress?.activeCourseId) {
@@ -145,7 +145,7 @@ export const getCourseProgress = cache(async () => {
 });
 
 export const getLesson = cache(async (id?: number) => {
-  const { userId } = await auth();
+  const { userId } = auth();
 
   if (!userId) {
     return null;

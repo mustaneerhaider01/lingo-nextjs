@@ -8,9 +8,10 @@ import { and, eq } from "drizzle-orm";
 import { getCourseById, getUserProgress } from "@/db/queries";
 import db from "@/db/drizzle";
 import { challengeProgress, challenges, userProgress } from "@/db/schema";
+import { MAX_HEARTS, POINTS_TO_REFILL } from "@/constants";
 
 export const upsertUserProgress = async (courseId: number) => {
-  const { userId } = await auth();
+  const { userId } = auth();
   const user = await currentUser();
 
   if (!userId || !user) {
@@ -57,7 +58,7 @@ export const upsertUserProgress = async (courseId: number) => {
 };
 
 export const reduceHearts = async (challengeId: number) => {
-  const { userId } = await auth();
+  const { userId } = auth();
 
   if (!userId) {
     throw new Error("Unauthorized");
@@ -112,4 +113,39 @@ export const reduceHearts = async (challengeId: number) => {
   revalidatePath("/leaderboard");
   revalidatePath("/lesson");
   revalidatePath(`/lesson/${lessonId}`);
+};
+
+export const refillHearts = async () => {
+  const { userId } = auth();
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const currentUserProgress = await getUserProgress();
+
+  if (!currentUserProgress) {
+    throw new Error("User progress not found");
+  }
+
+  if (currentUserProgress.hearts === MAX_HEARTS) {
+    throw new Error("Hearts are already full");
+  }
+
+  if (currentUserProgress.points < POINTS_TO_REFILL) {
+    throw new Error("Not enough points");
+  }
+
+  await db
+    .update(userProgress)
+    .set({
+      hearts: MAX_HEARTS,
+      points: currentUserProgress.points - POINTS_TO_REFILL,
+    })
+    .where(eq(userProgress.userId, userId));
+
+  revalidatePath("/learn");
+  revalidatePath("/shop");
+  revalidatePath("/quests");
+  revalidatePath("/leaderboard");
 };

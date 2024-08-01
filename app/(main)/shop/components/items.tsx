@@ -2,9 +2,11 @@
 
 import { useTransition } from "react";
 import Image from "next/image";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { MAX_HEARTS, POINTS_TO_REFILL } from "@/constants";
+import { refillHearts } from "@/actions/user-progress";
 
 type Props = {
   hearts: number;
@@ -18,7 +20,11 @@ const Items = ({ hearts, points, hasActiveSubscription }: Props) => {
   const onRefillHearts = () => {
     if (pending || hearts === MAX_HEARTS || points < POINTS_TO_REFILL) return;
 
-    startTransition(() => {});
+    startTransition(() => {
+      refillHearts().catch((err) =>
+        toast.error(err.message || "Something went wrong. Please try again.")
+      );
+    });
   };
 
   return (

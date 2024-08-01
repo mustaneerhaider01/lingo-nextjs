@@ -10,7 +10,7 @@ import { revalidatePath } from "next/cache";
 import { MAX_HEARTS, POINTS_PER_CHALLENGE } from "@/constants";
 
 export const upsertChallengeProgress = async (challengeId: number) => {
-  const { userId } = await auth();
+  const { userId } = auth();
 
   if (!userId) {
     throw new Error("Unauthorized");
@@ -65,6 +65,7 @@ export const upsertChallengeProgress = async (challengeId: number) => {
 
     revalidatePath("/learn");
     revalidatePath("/lesson");
+    revalidatePath("/shop");
     revalidatePath("/quests");
     revalidatePath("/leaderboard");
     revalidatePath(`/lesson/${lessonId}`);
@@ -86,6 +87,7 @@ export const upsertChallengeProgress = async (challengeId: number) => {
 
   revalidatePath("/learn");
   revalidatePath("/lesson");
+  revalidatePath("/shop");
   revalidatePath("/quests");
   revalidatePath("/leaderboard");
   revalidatePath(`/lesson/${lessonId}`);
