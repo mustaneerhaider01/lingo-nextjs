@@ -38,7 +38,7 @@ const Items = ({ hearts, points, hasActiveSubscription }: Props) => {
             window.location.href = response.data;
           }
         })
-        .catch((err) => toast.error("Something went wrong"));
+        .catch(() => toast.error("Something went wrong"));
     });
   };
 

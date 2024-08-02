@@ -41,8 +41,11 @@ export const getCourseById = cache(async (courseId: number) => {
     where: eq(courses.id, courseId),
     with: {
       units: {
+        orderBy: (units, { asc }) => [asc(units.order)],
         with: {
-          lessons: true,
+          lessons: {
+            orderBy: (lessons, { asc }) => [asc(lessons.order)],
+          },
         },
       },
     },
@@ -60,11 +63,14 @@ export const getUnits = cache(async () => {
   }
 
   const data = await db.query.units.findMany({
+    orderBy: (units, { asc }) => [asc(units.order)],
     where: eq(units.courseId, userProgress.activeCourseId),
     with: {
       lessons: {
+        orderBy: (lessons, { asc }) => [asc(lessons.order)],
         with: {
           challenges: {
+            orderBy: (challenges, { asc }) => [asc(challenges.order)],
             with: {
               challengeProgress: {
                 where: eq(challengeProgress.userId, userId),
@@ -130,7 +136,6 @@ export const getCourseProgress = cache(async () => {
   const firstUncompletedLesson = unitsInActiveCourse
     .flatMap((unit) => unit.lessons)
     .find((lesson) => {
-      // TODO: If something not works, check last condition in OR.
       return lesson.challenges.some((challenge) => {
         return (
           !challenge.challengeProgress ||
@@ -181,7 +186,6 @@ export const getLesson = cache(async (id?: number) => {
   }
 
   const normalizedChallenges = lesson.challenges.map((challenge) => {
-    // TODO: If something not works, check last condition in AND.
     const completed =
       challenge.challengeProgress &&
       challenge.challengeProgress.length > 0 &&
@@ -237,4 +241,25 @@ export const getUserSubscription = cache(async () => {
     data.stripeCurrentPeriodEnd?.getTime() + DAY_IN_MILLISECONDS > Date.now();
 
   return { ...data, isActive: !!isActive };
+});
+
+export const getTopTenUsers = cache(async () => {
+  const { userId } = auth();
+
+  if (!userId) {
+    return [];
+  }
+
+  const data = await db.query.userProgress.findMany({
+    orderBy: (userProgress, { desc }) => [desc(userProgress.points)],
+    limit: 10,
+    columns: {
+      userId: true,
+      userName: true,
+      userImageSrc: true,
+      points: true,
+    },
+  });
+
+  return data;
 });

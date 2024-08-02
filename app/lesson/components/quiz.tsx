@@ -9,7 +9,7 @@ import Confetti from "react-confetti";
 
 import Header from "./header";
 import Challenge from "./challenge";
-import { challengeOptions, challenges } from "@/db/schema";
+import { challengeOptions, challenges, userSubscription } from "@/db/schema";
 import QuestionBubble from "./question-bubble";
 import Footer from "./footer";
 import { upsertChallengeProgress } from "@/actions/challenge-progress";
@@ -27,7 +27,11 @@ type Props = {
     completed: boolean;
     challengeOptions: (typeof challengeOptions.$inferSelect)[];
   })[];
-  userSubscription: any; // TODO: Replace with subscription type from DB
+  userSubscription:
+    | (typeof userSubscription.$inferSelect & {
+        isActive: boolean;
+      })
+    | null;
 };
 
 const Quiz = ({
@@ -144,7 +148,7 @@ const Quiz = ({
             incorrectControls.play();
             setStatus("wrong");
 
-            // Either user is practicing or they have active subscription
+            // Neither user is practicing nor they have active subscription
             if (!response?.error) {
               setHearts((prev) => Math.max(prev - 1, 0));
             }
