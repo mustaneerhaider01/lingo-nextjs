@@ -11,6 +11,8 @@ import {
 } from "@/db/queries";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Promo } from "@/components/promo";
+import { Quests } from "@/components/quests";
 
 const LeaderboardPage = async () => {
   const [userProgress, userSubscription, leaderboard] = await Promise.all([
@@ -34,6 +36,8 @@ const LeaderboardPage = async () => {
           points={userProgress.points}
           hasActiveSubscription={isPro}
         />
+        <Promo hasActiveSubscription={isPro} />
+        <Quests points={userProgress.points} />
       </StickyWrapper>
 
       <FeedWrapper>

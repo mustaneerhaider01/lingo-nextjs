@@ -24,9 +24,8 @@ const PracticeLessonPage = async ({ params: { lessonId } }: PageProps) => {
     (challenge) => challenge.completed
   );
 
-  const initialPercentage = Math.round(
-    (completedChallenges.length / lesson.challenges.length) * 100
-  );
+  const initialPercentage =
+    (completedChallenges.length / lesson.challenges.length) * 100;
 
   return (
     <Quiz
